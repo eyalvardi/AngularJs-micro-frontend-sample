@@ -7,6 +7,7 @@ import {UserProxy} from "./user.proxy.service";
 class UsersComponent{
     users:any[];
 
+    static $inject = ["proxy"];
     constructor(private proxy:UserProxy){
         this.load(8);
     }

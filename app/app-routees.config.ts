@@ -21,11 +21,7 @@ export function appRoutesConfig($stateProvider,$uiRouter){
         url  : '/todo-list',
         component : "todoList",
         lazyLoad: async function ($transition$) {
-            const usersModule = await import(
-                /* webpackChunkName: "todos/todos.module" */
-                /* webpackMode: "lazy"              */
-                /* webpackPrefetch: true            */
-                './todo/todo.module');
+            const usersModule = await import('todo');
             return $transition$
                 .injector()
                 .get('$ocLazyLoad')

@@ -3,6 +3,7 @@ import {IHttpService, ILogService} from "angular";
 
 class AppComponent{
     name:string = 'Eyal Vardi';
+    static $inject = ['$http','$log'];
     constructor(private $http:IHttpService ,$log:ILogService){}
     foo(){
         this.name+= '!';

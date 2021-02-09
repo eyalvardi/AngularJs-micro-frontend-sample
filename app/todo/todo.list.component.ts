@@ -7,6 +7,8 @@ class TodoListComponent{
     vm:TodoList = new TodoList();
     desc:string;
 
+    static $inject = ["$log","$http","todo"];
+
     constructor(
         private $log:ILogService,
         private $http:IHttpService,

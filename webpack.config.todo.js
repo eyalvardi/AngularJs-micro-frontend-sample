@@ -4,34 +4,36 @@ const {
   DefinePlugin,   
 } = require("webpack");
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
-
 const SizePlugin = require('size-plugin');
 
-const HtmlWebpackPlugin     = require('html-webpack-plugin');
-const HtmlMinimizerPlugin   = require("html-minimizer-webpack-plugin");
-const PreloadWebpackPlugin  = require('@alesmenzel/preload-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlMinimizerPlugin = require("html-minimizer-webpack-plugin");
+const PreloadWebpackPlugin = require('@alesmenzel/preload-webpack-plugin');
 const PreloadWebpackPlugin2 = require('@vue/preload-webpack-plugin');
 
+
+
+
 module.exports = {
-  name   : "ng1tong2",
+  name   : "todo-module",
   mode   : 'development',  
   devtool: "source-map",
-  entry: {   
-    'main' :   "./app/main.ts"        
+  entry: {    
+    'todo' : "./app/todo/index"
   },
   output: {
-    filename   : "ng1-to-ng2/[name].bundle.js",
-    path       : path.resolve(__dirname, "./dist/apollo"),
-    publicPath : 'http://localhost:8080/apollo/',
+    filename: "ng1-to-ng2/todo/[name].bundle.js",
+    path: path.resolve(__dirname, "./dist/apollo"),
+    publicPath : 'http://localhost:3001/apollo/',
   },
-  devServer: {
-    publicPath : '/apollo/',
-    port: 8080,
+  devServer: {    
+    port: 3001,
+    contentBase: path.join(__dirname, "dist/apollo"),
     //open: true,
-    openPage: 'apollo/ng1-to-ng2',
+    openPage: 'apollo/ng1-to-ng2/todo',
   },
   optimization: {
-    minimize: false,
+    minimize: true,
     minimizer : [
       '...',
       new HtmlMinimizerPlugin(),
@@ -70,19 +72,17 @@ module.exports = {
         PRODUCTION: JSON.stringify(true),
       }),
       new ModuleFederationPlugin({
-        name   : "apollo",
-        library: { type: "var", name: "apollo" },
-        remotes: {
-          todo: "todo",
+        name: "todo",
+        library: { type: "var", name: "todo" },
+        filename: "remoteEntry-todo-module.js",
+        exposes: {
+          "./todo.module": "./app/todo/index",
         },
-        //shared : ['angular']
+        shared: ['angular']
       }),
       new HtmlWebpackPlugin({
         template : "./app/index.html",
-        filename : "ng1-to-ng2/index.html",
-        excludeChunks  : [
-          'todo/todo.module'
-        ]
+        filename : "ng1-to-ng2/todo/index.html"        
       })
     ],
 };

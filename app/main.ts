@@ -1,4 +1,5 @@
 import * as angular from 'angular';
-import {appModule} from "./app.module";
 
-angular.bootstrap(document,[appModule.name]);
+import('./app.module').then( module => {
+    angular.bootstrap(document,[ module.appModule.name]);
+})
