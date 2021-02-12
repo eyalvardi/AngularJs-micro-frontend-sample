@@ -48,8 +48,8 @@ const shellAppConfig = {
         'app-shell-main': "./app-shell/main.ts"
     },
     output: {
-        filename: "ng1-to-ng2/app-shell/[name].bundle.js",
-        path: path.resolve(__dirname, "./dist/apollo"),
+        path: path.resolve(__dirname, "./dist/apollo/ng1-to-ng2"),
+        filename: "app-shell/[name].bundle.js",
     },
     optimization: {
         minimize: false,
@@ -62,9 +62,10 @@ const shellAppConfig = {
         runtimeChunk: {
             name: 'runtime',
         },
-        splitChunks: {
+        /*splitChunks: {
             chunks: 'all',
-        },
+            //name : false
+        },*/
     },
     resolve: {
         extensions: [".tsx", ".ts", ".js"],
@@ -101,7 +102,7 @@ const shellAppConfig = {
         }),
         new HtmlWebpackPlugin({
             template: "./app-shell/index.html",
-            filename: "index.html",
+            filename: "../index.html",
             inject: 'body',
             scriptLoading: 'blocking'
         })
@@ -116,8 +117,8 @@ const todoAppConfig = {
         'app-todo-main': "./app-todo/main.ts"
     },
     output: {
-        path: path.resolve(__dirname, "./dist/apollo"),
-        filename: "ng1-to-ng2/app-todo/[name].bundle.js",
+        path: path.resolve(__dirname, "./dist/apollo/ng1-to-ng2"),
+        filename: "app-todo/[name].bundle.js",
     },
     resolve: {
         extensions: [".tsx", ".ts", ".js"],
@@ -144,17 +145,17 @@ const todoAppConfig = {
         new ModuleFederationPlugin({
             name: "appTodo",
             library: {type: "var", name: "appTodo"},
-            filename: 'ng1-to-ng2/remoteEntry-todo-module.js',
+            filename: 'remoteEntry-todo-module.js',
             exposes: {
                 "./todoModule": "./app-todo/todo/todo.module",
             },
-            //shared: ['angular']
+            shared: ['angular']
         }),
         new HtmlWebpackPlugin({
             inject: 'body',
             scriptLoading: 'blocking',
             template: "./app-todo/index.html",
-            filename: "./ng1-to-ng2/app-todo/index.html",
+            filename: "./app-todo/index.html",
             chunks : [
                 'app-todo-main'
             ]

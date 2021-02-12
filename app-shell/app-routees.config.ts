@@ -5,8 +5,10 @@ export function appRoutesConfig( $stateProvider, $uiRouter , $stateRegistry){
 
     if (!PRODUCTION) {
         // Show the UI-Router Visualizer
-        import("@uirouter/visualizer")
-            .then(module => $uiRouter.plugin(module.Visualizer));
+        import(
+            /* webpackChunkName: "ui-router-visualizer" */
+            "@uirouter/visualizer"
+        ).then(module => $uiRouter.plugin(module.Visualizer));
     }
 
     const shellState = {

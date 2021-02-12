@@ -25,7 +25,10 @@ export const appModule = angular
 		'$stateProvider', '$uiRouterProvider', '$stateRegistryProvider',
 		($stateProvider, $uiRouter, $stateRegistry) => {
 
-			import("@uirouter/visualizer")
+			import(
+				/* webpackChunkName: "ui-router-visualizer" */
+				"@uirouter/visualizer"
+				)
 				.then(module => $uiRouter.plugin(module.Visualizer));
 
 			// If the user enters a URL that doesn't match any known URL (state), send them to `/welcome`
