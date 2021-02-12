@@ -3,7 +3,6 @@ import '@uirouter/angularjs';
 import 'oclazyload';
 
 import {appComponent} from "./app.component";
-import {bezeqIntComponent} from "./temp/bezeq-int.component";
 import {appRoutesConfig} from './app-routees.config';
 
 // import {TestModule} from "./test/test.module";
@@ -18,4 +17,3 @@ export const appModule = angular
     ])
     .config(appRoutesConfig)
     .component('myApp',appComponent)
-    .component('bezeqInt',bezeqIntComponent);

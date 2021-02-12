@@ -2,16 +2,16 @@
   "name": "application-name",
   "version": "0.0.1",
   "scripts": {
-    "tsc": "tsc -p tsconfig.json",
-    
-    "--------------   Todo  ---------" : "",
-    "serve-todo" : "webpack serve --progress --config webpack.config.todo.js",
-    "build-todo" : "webpack --progress --config webpack.config.todo.js",
-    "--------------   App  ---------" : "",
-    "serve-app" : "webpack serve --progress",
-    "build-app" : "webpack --progress --json=stats.json",
+    "--------------   Shell  ---------": "",
+    "serve": "webpack serve --progress",
+    "build": "webpack --progress",
     "build-prod": "webpack --mode production --profile --optimization-minimize --progress --json=stats-prod.json",
-    "diif"      : "wbd diff stats.json stats-prod.json -o diff.json"
+    "--------------   Todo  ---------": "",
+    "serve-todo": "webpack serve --progress --config webpack.config.todo.js",
+    "build-todo": "webpack --progress --config webpack.config.todo.js",
+    "--------------   Misc  ---------": "",
+    "diif": "wbd diff stats.json stats-prod.json -o diff.json",
+    "tsc": "tsc -p tsconfig.json"
   },
   "dependencies": {
     "@uirouter/angularjs": "^1.0.29",
@@ -36,6 +36,7 @@
     "@types/angular-ui-router": "^1.1.40",
     "@types/core-js": "^2.5.4",
     "@vue/preload-webpack-plugin": "^1.1.2",
+    "clean-webpack-plugin": "^3.0.0",
     "html-minimizer-webpack-plugin": "^2.1.0",
     "html-webpack-plugin": "^5.0.0",
     "size-plugin": "^3.0.0",

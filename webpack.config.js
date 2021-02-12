@@ -3,32 +3,40 @@ const {
   CleanPlugin,
   DefinePlugin,   
 } = require("webpack");
-const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
-
+const { ModuleFederationPlugin } = require("webpack").container;
 const SizePlugin = require('size-plugin');
-
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin     = require('html-webpack-plugin');
 const HtmlMinimizerPlugin   = require("html-minimizer-webpack-plugin");
 const PreloadWebpackPlugin  = require('@alesmenzel/preload-webpack-plugin');
 const PreloadWebpackPlugin2 = require('@vue/preload-webpack-plugin');
 
-module.exports = {
-  name   : "ng1tong2",
-  mode   : 'development',  
-  devtool: "source-map",
-  entry: {   
-    'main' :   "./app/main.ts"        
-  },
-  output: {
-    filename   : "ng1-to-ng2/[name].bundle.js",
-    path       : path.resolve(__dirname, "./dist/apollo"),
-    publicPath : 'http://localhost:8080/apollo/',
-  },
+const devServerConfig = {
+  name: 'root-dev-server',
+  mode   : 'development',
   devServer: {
     publicPath : '/apollo/',
     port: 8080,
     //open: true,
     openPage: 'apollo/ng1-to-ng2',
+  },
+  entry : {},
+  output:{
+    path       : path.resolve(__dirname, "./dist/apollo"),
+    publicPath : 'http://localhost:8080/apollo/',
+  }
+}
+
+const shellAppConfig = {
+  name   : "shell",
+  mode   : 'development',  
+  devtool: "source-map",
+  entry: {   
+    'main' :   "./app-shell/main.ts"        
+  },
+  output: {
+    filename   : "ng1-to-ng2/app-shell/[name].bundle.js",
+    path       : path.resolve(__dirname, "./dist/apollo"),
   },
   optimization: {
     minimize: false,
@@ -64,25 +72,85 @@ module.exports = {
     ],
   },
   plugins: [
-      new CleanPlugin(),
-      //new SizePlugin(),
+      new CleanWebpackPlugin({
+        cleanOnceBeforeBuildPatterns: ['./ng1-to-ng2/app-shell/*']
+      }),
       new DefinePlugin({
         PRODUCTION: JSON.stringify(true),
       }),
       new ModuleFederationPlugin({
-        name   : "apollo",
-        library: { type: "var", name: "apollo" },
+        name   : "shell",
         remotes: {
-          todo: "todo",
+          appTodo: "appTodo@http://localhost:8080/apollo/ng1-to-ng2/remoteEntry-todo-module.js",
         },
-        //shared : ['angular']
+        exposes: {} ,
+        //shared : { angular : {singleton : true} }
       }),
       new HtmlWebpackPlugin({
-        template : "./app/index.html",
+        template : "./app-shell/index.html",
         filename : "ng1-to-ng2/index.html",
+        inject : 'body',
+        scriptLoading : 'blocking',
         excludeChunks  : [
           'todo/todo.module'
         ]
       })
     ],
 };
+
+const todoAppConfig = {
+  name   : "todo-app",
+  mode   : 'development',  
+  devtool: "source-map",
+  entry: {   
+    'app-todo-main' : "./app-todo/main.ts"
+  },
+  output: {
+    path     : path.resolve(__dirname, "./dist/apollo"),
+    filename : "ng1-to-ng2/app-todo/[name].bundle.js",
+  },
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        use: {
+          loader : "ts-loader",
+          options: {
+            transpileOnly: true
+          }
+        },
+       
+        exclude: /node_modules/,
+      },
+    ],
+  },
+  plugins: [
+      /*new CleanWebpackPlugin({
+        cleanOnceBeforeBuildPatterns: ['./ng1-to-ng2/app-todo/!*']
+      }),*/
+      new ModuleFederationPlugin({
+        name   : "appTodo",
+        library: { type: "var", name: "appTodo" },
+        filename: "ng1-to-ng2/remoteEntry-todo-module.js",
+        exposes: {
+          "./todoModule": "./app-todo/todo/todo.module",
+        },
+        shared: ['angular']
+      }),
+      new HtmlWebpackPlugin({
+        inject : 'body',
+        scriptLoading : 'blocking',
+        template : "./app-todo/index.html",
+        filename : "./ng1-to-ng2/app-todo/index.html"
+      })
+    ],
+};
+
+module.exports = [
+  shellAppConfig,
+  todoAppConfig,
+  devServerConfig
+]

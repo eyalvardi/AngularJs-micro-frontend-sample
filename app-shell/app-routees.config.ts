@@ -1,27 +1,17 @@
 declare const PRODUCTION : boolean;
 
 appRoutesConfig.$inject = ['$stateProvider','$uiRouterProvider'];
-export function appRoutesConfig($stateProvider,$uiRouter){
+export function appRoutesConfig( $stateProvider, $uiRouter ){
 
-    // $stateProvider.state({
-    //     name : 'todo-list',
-    //     url  : '/todo-list',
-    //     component : "todoList",
-    //     lazyLoad: function ($transition$) {
-    //         return $transition$
-    //             .injector()
-    //             .get('$ocLazyLoad')
-    //             .load('./todo/todo.module.bundle.js');
-    //       }
-    // });
-
-
+    /*
+    * Load from micro frontend app-todo
+    * */
     $stateProvider.state({
         name : 'todo-list',
         url  : '/todo-list',
         component : "todoList",
         lazyLoad: async function ($transition$) {
-            const usersModule = await import('todo');
+            const usersModule = await import('appTodo/todoModule');
             return $transition$
                 .injector()
                 .get('$ocLazyLoad')

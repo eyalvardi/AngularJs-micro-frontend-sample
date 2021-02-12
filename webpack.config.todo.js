@@ -3,8 +3,7 @@ const {
   CleanPlugin,
   DefinePlugin,   
 } = require("webpack");
-const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
-const SizePlugin = require('size-plugin');
+const { ModuleFederationPlugin } = require("webpack").container;const SizePlugin = require('size-plugin');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlMinimizerPlugin = require("html-minimizer-webpack-plugin");
@@ -19,7 +18,8 @@ module.exports = {
   mode   : 'development',  
   devtool: "source-map",
   entry: {    
-    'todo' : "./app/todo/index"
+    'todo' : "./app/todo/todo.module",
+    //'todo' : "./app/todo/index"
   },
   output: {
     filename: "ng1-to-ng2/todo/[name].bundle.js",
@@ -33,7 +33,7 @@ module.exports = {
     openPage: 'apollo/ng1-to-ng2/todo',
   },
   optimization: {
-    minimize: true,
+    minimize: false,
     minimizer : [
       '...',
       new HtmlMinimizerPlugin(),
@@ -76,7 +76,7 @@ module.exports = {
         library: { type: "var", name: "todo" },
         filename: "remoteEntry-todo-module.js",
         exposes: {
-          "./todo.module": "./app/todo/index",
+          "./todoModule": "./app/todo/todo.module",
         },
         shared: ['angular']
       }),
