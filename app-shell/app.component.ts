@@ -7,19 +7,6 @@ class AppComponent{
     get version(){ return angular.version.full; }
     static $inject = ['$http','$log'];
     constructor(private $http:IHttpService ,$log:ILogService){}
-    async foo(){
-        this.name+= '!';
-        //const todoModule = await import('todo/todoModule');
-    }
-    async loadAppTodoBuild(){
-        /*const appTodoModule = await import(
-            /!* webpackIgnore : true   *!/
-            /!* webpackMode   : "lazy" *!/
-            `http://localhost:8080/apollo/ng1-to-ng2/`
-            );*/
-
-        const todoModule = await import('appTodo/todoModule');
-    }
 }
 
 export const appComponent : IComponentOptions = {
@@ -27,13 +14,15 @@ export const appComponent : IComponentOptions = {
     template : `
     <div>
         <h3>Micro Frontend with AngularJS and Webpack</h3>
-        <strong>AngularJs : {{ ::$ctrl.version }}</strong>
+        <pre>AngularJs : {{ ::$ctrl.version }}</pre>
         <hr>
         <nav>
-            <a ui-sref="users" ui-sref-active="active">Users</a> |
-            <a ui-sref="todo-list" ui-sref-active="active">Todo List</a> |
-            <button ng-click="$ctrl.loadAppTodoBuild()">Load app-todo from dist</button>
-            <button ng-click="$ctrl.foo()">Load Todo</button>
+            <a ui-sref="users" ui-sref-active="active">
+                Users (from app-shell)
+            </a> |
+            <a ui-sref="todo-list" ui-sref-active="active">
+                Todo (from app-todo)
+            </a> |            
         </nav>
         <hr>
         <div ui-view></div>
