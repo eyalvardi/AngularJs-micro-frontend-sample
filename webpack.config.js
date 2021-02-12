@@ -1,8 +1,9 @@
 const path = require("path");
 const {
   CleanPlugin,
-  DefinePlugin,   
+  DefinePlugin,
 } = require("webpack");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 const { ModuleFederationPlugin } = require("webpack").container;
 const SizePlugin = require('size-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
@@ -19,12 +20,25 @@ const devServerConfig = {
     port: 8080,
     //open: true,
     openPage: 'apollo/ng1-to-ng2',
+    contentBase: path.join(__dirname, './dist/apollo/ng1-to-ng2'),
+    contentBasePublicPath: '/apollo/ng1-to-ng2',
   },
   entry : {},
   output:{
     path       : path.resolve(__dirname, "./dist/apollo"),
     publicPath : 'http://localhost:8080/apollo/',
-  }
+  },
+
+  plugins : [
+      new CopyWebpackPlugin({
+        patterns : [
+          {
+            from : 'node_modules/bootstrap/dist/css/bootstrap.min.css',
+            to   : './ng1-to-ng2/css'
+          }
+        ]
+      })
+  ]
 }
 
 const shellAppConfig = {
@@ -151,6 +165,6 @@ const todoAppConfig = {
 
 module.exports = [
   shellAppConfig,
-  todoAppConfig,
+  //todoAppConfig,
   devServerConfig
 ]
