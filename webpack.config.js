@@ -89,7 +89,7 @@ const shellAppConfig = {
             cleanOnceBeforeBuildPatterns: ['./ng1-to-ng2/app-shell/*']
         }),
         new DefinePlugin({
-            PRODUCTION: JSON.stringify(true),
+            PRODUCTION: JSON.stringify(false),
         }),
         new ModuleFederationPlugin({
             name: "shell",
@@ -144,17 +144,20 @@ const todoAppConfig = {
         new ModuleFederationPlugin({
             name: "appTodo",
             library: {type: "var", name: "appTodo"},
-            filename: "ng1-to-ng2/remoteEntry-todo-module.js",
+            filename: 'ng1-to-ng2/remoteEntry-todo-module.js',
             exposes: {
                 "./todoModule": "./app-todo/todo/todo.module",
             },
-            shared: ['angular']
+            //shared: ['angular']
         }),
         new HtmlWebpackPlugin({
             inject: 'body',
             scriptLoading: 'blocking',
             template: "./app-todo/index.html",
-            filename: "./ng1-to-ng2/app-todo/index.html"
+            filename: "./ng1-to-ng2/app-todo/index.html",
+            chunks : [
+                'app-todo-main'
+            ]
         })
     ],
 };

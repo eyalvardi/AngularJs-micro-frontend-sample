@@ -20,12 +20,12 @@ export const appComponent : IComponentOptions = {
             <a ui-sref="users" ui-sref-active="active">
                 Users (from app-shell)
             </a> |
-            <a ui-sref="todo-list" ui-sref-active="active">
+            <a ui-sref="todo" ui-sref-active="active">
                 Todo (from app-todo)
             </a> |            
         </nav>
         <hr>
-        <div ui-view></div>
+        <div ui-view="shellView"></div>
         
     </div>
     <!--

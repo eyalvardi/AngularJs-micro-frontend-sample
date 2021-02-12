@@ -1,30 +1,42 @@
 declare const PRODUCTION : boolean;
 
-appRoutesConfig.$inject = ['$stateProvider','$uiRouterProvider'];
-export function appRoutesConfig( $stateProvider, $uiRouter ){
+appRoutesConfig.$inject = ['$stateProvider','$uiRouterProvider','$stateRegistryProvider'];
+export function appRoutesConfig( $stateProvider, $uiRouter , $stateRegistry){
+
+    if (!PRODUCTION) {
+        // Show the UI-Router Visualizer
+        import("@uirouter/visualizer")
+            .then(module => $uiRouter.plugin(module.Visualizer));
+    }
+
+    const shellState = {
+        name: 'shell',
+        redirectTo: 'users',
+        component: 'myApp'
+    }
+
 
     /*
     * Load from micro frontend app-todo
     * */
-    $stateProvider.state({
-        name : 'todo-list',
-        url  : '/todo-list',
-        component : "todoList",
+    const todoState = {
+        parent : 'shell',
+        name : 'todo.**',
+        url  : '/todo',
         lazyLoad: async function ($transition$) {
-            const usersModule = await import('appTodo/todoModule');
-            return $transition$
-                .injector()
-                .get('$ocLazyLoad')
-                .load({
-                    name : 'todo.module'
-                });
+            const $ocLazyLoad = $transition$.injector().get('$ocLazyLoad');
+            const todoModule = await import('appTodo/todoModule');
+            return $ocLazyLoad.load({ name : 'todo.module' });
           }
-    });
+    }
 
-    $stateProvider.state({
+    const usersState = {
+        parent : 'shell',
         name : 'users',
         url  : '/users',
-        component : 'users',
+        views : {
+            shellView : {component : 'users'}
+        },
         lazyLoad: async function ($transition$) {
             const usersModule = await import(
                 /* webpackChunkName: "users/users.module" */
@@ -38,9 +50,9 @@ export function appRoutesConfig( $stateProvider, $uiRouter ){
                     name : 'users.module'
                 });
           }
-    });
-    if (!PRODUCTION) {
-        // Show the UI-Router Visualizer
-        import("@uirouter/visualizer").then(module => $uiRouter.plugin(module.Visualizer));
-      }    
+    };
+
+    $stateRegistry.register(todoState);
+    $stateRegistry.register(shellState);
+    $stateRegistry.register(usersState);
 }

@@ -1,20 +1,14 @@
-declare const PRODUCTION : boolean;
 
-appRoutesConfig.$inject = ['$stateProvider','$uiRouterProvider'];
-export function appRoutesConfig($stateProvider,$uiRouter){
+appRoutesConfig.$inject = ['$stateProvider','$stateRegistryProvider'];
+export function appRoutesConfig($stateProvider,$stateRegistry){
 
-    $stateProvider.state({
-        name : 'todo-list',
-        url  : '/todo-list',
-        component : "todoList",
-        lazyLoad: async function ($transition$) {
-            const usersModule = await import('./todo/todo.module');
-            return $transition$
-                .injector()
-                .get('$ocLazyLoad')
-                .load({
-                    name : 'todo.module'
-                });
-          }
-    });   
+    const todoState = {
+        parent : 'shell',
+        name : 'todo',
+        url  : '/todo',
+        views : {
+            '!$default.shellView' : { component : 'todoList' }
+        }
+    };
+    $stateRegistry.register(todoState);
 }

@@ -12,6 +12,6 @@ export const appComponent : IComponentOptions = {
     template : `
     <div>
         <h3>App Todo Micro Frontend</h3>       
-        <div ui-view></div>        
+        <div ui-view="shellView"></div>        
     </div>  
 `};
