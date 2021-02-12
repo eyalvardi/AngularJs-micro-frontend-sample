@@ -1,1 +1,1 @@
-"# ng1-to-ng1-ts-webpack" 
+"# AngularJS Micro Frontend Demo" 
