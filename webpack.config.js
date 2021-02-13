@@ -210,8 +210,7 @@ module.exports = (env, webpackArgs) => {
         });
 
         projects.push(devServerConfig);
-        console.log(projects);
-        console.log(JSON.stringify(args.uiRouterTrace));
+        //console.log(projects);
         return projects;
     })
 }
