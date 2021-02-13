@@ -75,21 +75,6 @@ const shellAppConfig = {
         }),
         new DefinePlugin({
             PRODUCTION: JSON.stringify(false),
-        }),
-        /*new ModuleFederationPlugin({
-            name: "shell",
-            remotes: {
-                appTodo : "appTodo@http://localhost:8080/apollo/ng1-to-ng2/remoteEntry-todo-module.js",
-                appUsers: "appUsers@http://localhost:8080/apollo/ng1-to-ng2/remoteEntry-users-module.js",
-            },
-            exposes: {},
-            //shared : { angular : {singleton : true} }
-        }),*/
-        new HtmlWebpackPlugin({
-            template: "./app-shell/index.html",
-            filename: "../index.html",
-            inject: 'body',
-            scriptLoading: 'blocking'
         })
     ],
 };
@@ -210,6 +195,15 @@ function buildAppConfig( configName , isUiVisualizer, uiRouterTrace, buildVersio
                     exposes: {},
                     //shared : { angular : {singleton : true} }
                 }),
+                new HtmlWebpackPlugin({
+                    template: "./app-shell/index.ejs",
+                    templateParameters : {
+                        FOLDER_VERSION : buildVersion
+                    },
+                    filename: "../index.html",
+                    inject: 'body',
+                    scriptLoading: 'blocking'
+                })
             )
             break;
         case 'todo':
