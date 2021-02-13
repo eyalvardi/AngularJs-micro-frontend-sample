@@ -8,13 +8,10 @@ class UsersComponent{
     users:any[];
 
     static $inject = ["proxy"];
-    constructor(private proxy:UserProxy){
-
-    }
+    constructor(private proxy:UserProxy){}
     $onInit(){
         this.load(3);
     }
-
     load(num){
         this.proxy
             .load(num)
@@ -28,7 +25,7 @@ export const usersComponent : IComponentOptions = {
     controller: UsersComponent,
     template : `
     <div>
-        <h4>Code Splitting: App shell users</h4>
+        <h4>Micro frontend: App users</h4>
         <user source="user" ng-repeat="user in $ctrl.users">{{user.name.first}}</user>
     </div>
 `};

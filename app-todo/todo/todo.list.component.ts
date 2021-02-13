@@ -33,7 +33,7 @@ export const todoListComponent : IComponentOptions = {
     controller: TodoListComponent,
     template : `
     <div>
-        <h3>Todo List Demo</h3>
+        <h4>Micro frontend: App todo</h4>
         <input type="text" ng-model="$ctrl.desc">
         <button ng-click="$ctrl.add($ctrl.desc)">Add</button>
         <hr>        

@@ -3,14 +3,55 @@ const {
     CleanPlugin,
     DefinePlugin,
 } = require("webpack");
+const { merge } = require('webpack-merge');
+
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const {ModuleFederationPlugin} = require("webpack").container;
-const SizePlugin = require('size-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlMinimizerPlugin = require("html-minimizer-webpack-plugin");
-const PreloadWebpackPlugin = require('@alesmenzel/preload-webpack-plugin');
-const PreloadWebpackPlugin2 = require('@vue/preload-webpack-plugin');
+
+
+const basicConfig = {
+    devtool: "source-map",
+    mode: 'development',
+    resolve: {
+        extensions: [".tsx", ".ts", ".js"],
+    },
+    module: {
+        rules: [
+            {
+                test: /\.tsx?$/,
+                use: {
+                    loader: "ts-loader",
+                    options: {
+                        transpileOnly: true
+                    }
+                },
+
+                exclude: /node_modules/,
+            },
+        ],
+    },
+
+    // Doesn't work with federation (Micro frontend).
+    /*optimization: {
+        minimize: false,
+        minimizer: [
+            '...',
+            new HtmlMinimizerPlugin(),
+        ],
+        chunkIds: 'named',
+        mergeDuplicateChunks: true,
+        runtimeChunk: {
+            name: 'runtime',
+        },
+        splitChunks: {
+            chunks: 'all',
+            //name : false
+        },
+    },*/
+}
 
 const devServerConfig = {
     name: 'root-dev-server',
@@ -42,48 +83,12 @@ const devServerConfig = {
 
 const shellAppConfig = {
     name: "app-shell",
-    mode: 'development',
-    devtool: "source-map",
     entry: {
         'app-shell-main': "./app-shell/main.ts"
     },
     output: {
         path: path.resolve(__dirname, "./dist/apollo/ng1-to-ng2"),
         filename: "app-shell/[name].bundle.js",
-    },
-    optimization: {
-        minimize: false,
-        minimizer: [
-            '...',
-            new HtmlMinimizerPlugin(),
-        ],
-        chunkIds: 'named',
-        mergeDuplicateChunks: true,
-        runtimeChunk: {
-            name: 'runtime',
-        },
-        /*splitChunks: {
-            chunks: 'all',
-            //name : false
-        },*/
-    },
-    resolve: {
-        extensions: [".tsx", ".ts", ".js"],
-    },
-    module: {
-        rules: [
-            {
-                test: /\.tsx?$/,
-                use: {
-                    loader: "ts-loader",
-                    options: {
-                        transpileOnly: true
-                    }
-                },
-
-                exclude: /node_modules/,
-            },
-        ],
     },
     plugins: [
         new CleanWebpackPlugin({
@@ -95,7 +100,8 @@ const shellAppConfig = {
         new ModuleFederationPlugin({
             name: "shell",
             remotes: {
-                appTodo: "appTodo@http://localhost:8080/apollo/ng1-to-ng2/remoteEntry-todo-module.js",
+                appTodo : "appTodo@http://localhost:8080/apollo/ng1-to-ng2/remoteEntry-todo-module.js",
+                appUsers: "appUsers@http://localhost:8080/apollo/ng1-to-ng2/remoteEntry-users-module.js",
             },
             exposes: {},
             //shared : { angular : {singleton : true} }
@@ -108,35 +114,47 @@ const shellAppConfig = {
         })
     ],
 };
-
+const usersAppConfig = {
+    name: "users-app",
+    entry: {
+        'app-users-main': "./app-users/main.ts"
+    },
+    output: {
+        path: path.resolve(__dirname, "./dist/apollo/ng1-to-ng2"),
+        filename: "app-users/[name].bundle.js",
+    },
+    plugins: [
+        /*new CleanWebpackPlugin({
+          cleanOnceBeforeBuildPatterns: ['./ng1-to-ng2/app-users/!*']
+        }),*/
+        new ModuleFederationPlugin({
+            name: "appUsers",
+            library: {type: "var", name: "appUsers"},
+            filename: 'remoteEntry-users-module.js',
+            exposes: {
+                "./usersModule": "./app-users/users/users.module",
+            },
+            shared: ['angular']
+        }),
+        new HtmlWebpackPlugin({
+            inject: 'body',
+            scriptLoading: 'blocking',
+            template: "./app-users/index.html",
+            filename: "./app-users/index.html",
+            chunks : [
+                'app-users-main'
+            ]
+        })
+    ],
+};
 const todoAppConfig = {
     name: "todo-app",
-    mode: 'development',
-    devtool: "source-map",
     entry: {
         'app-todo-main': "./app-todo/main.ts"
     },
     output: {
         path: path.resolve(__dirname, "./dist/apollo/ng1-to-ng2"),
         filename: "app-todo/[name].bundle.js",
-    },
-    resolve: {
-        extensions: [".tsx", ".ts", ".js"],
-    },
-    module: {
-        rules: [
-            {
-                test: /\.tsx?$/,
-                use: {
-                    loader: "ts-loader",
-                    options: {
-                        transpileOnly: true
-                    }
-                },
-
-                exclude: /node_modules/,
-            },
-        ],
     },
     plugins: [
         /*new CleanWebpackPlugin({
@@ -163,14 +181,20 @@ const todoAppConfig = {
     ],
 };
 
-const projectsMap = new Map([['shellAppConfig',shellAppConfig],['todoAppConfig',todoAppConfig]]);
+const projectsMap = new Map([
+    ['shellAppConfig' , shellAppConfig ],
+    ['todoAppConfig'  , todoAppConfig  ],
+    ['usersAppConfig' , usersAppConfig ]
+]);
 
 module.exports = (env, webpackArgs) => {
     return require('./webpack/cli').then(args => {
         const projects = [];
         args.projects.forEach( pro => {
             if( projectsMap.has(pro)){
-                projects.push(projectsMap.get(pro));
+                projects.push(
+                    merge( basicConfig , projectsMap.get(pro) )
+                );
             }
         });
 

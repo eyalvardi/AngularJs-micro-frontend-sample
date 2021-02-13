@@ -1,5 +1,5 @@
 import * as angular from 'angular';
-import {appRoutesConfig} from "../app-routees.config";
+import {appRoutesConfig} from "./app-routees.config";
 import {todoListComponent} from "./todo.list.component";
 import {TodoList} from "./todoList.model";
 import {taskComponent} from "./task.component";

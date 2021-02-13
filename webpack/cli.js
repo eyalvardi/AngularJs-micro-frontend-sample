@@ -10,8 +10,9 @@ module.exports = inquirer
             name : 'projects',
             message: 'Choose the projects:',
             choices : [
-                { name :'app-shell',value : 'shellAppConfig',checked: true},
-                { name :'app-todo' ,value : 'todoAppConfig' ,checked: true},
+                { name :'app-shell' ,value : 'shellAppConfig' ,checked: true},
+                { name :'app-todo'  ,value : 'todoAppConfig'  ,checked: true},
+                { name :'app-users' ,value : 'usersAppConfig' ,checked: true},
             ]
         }
     ]);

@@ -1,15 +1,5 @@
-declare const PRODUCTION : boolean;
-
 appRoutesConfig.$inject = ['$stateProvider','$uiRouterProvider','$stateRegistryProvider'];
 export function appRoutesConfig( $stateProvider, $uiRouter , $stateRegistry){
-
-    if (!PRODUCTION) {
-        // Show the UI-Router Visualizer
-        import(
-            /* webpackChunkName: "ui-router-visualizer" */
-            "@uirouter/visualizer"
-        ).then(module => $uiRouter.plugin(module.Visualizer));
-    }
 
     const shellState = {
         name: 'shell',
@@ -17,22 +7,10 @@ export function appRoutesConfig( $stateProvider, $uiRouter , $stateRegistry){
         component: 'myApp'
     }
 
-
-    /*
-    * Load from micro frontend app-todo
-    * */
-    const todoState = {
-        parent : 'shell',
-        name : 'todo.**',
-        url  : '/todo',
-        lazyLoad: async function ($transition$) {
-            const $ocLazyLoad = $transition$.injector().get('$ocLazyLoad');
-            const todoModule = await import('appTodo/todoModule');
-            return $ocLazyLoad.load({ name : 'todo.module' });
-          }
-    }
-
-    const usersState = {
+    /***********************************
+     * Code splitting and lazy loading
+     ***********************************/
+    const localUsersState = {
         parent : 'shell',
         name : 'users',
         url  : '/users',
@@ -54,7 +32,34 @@ export function appRoutesConfig( $stateProvider, $uiRouter , $stateRegistry){
           }
     };
 
-    $stateRegistry.register(todoState);
+    /***********************************
+    * Load from micro frontend
+    ***********************************/
+    const todoState = {
+        parent : 'shell',
+        name   : 'todo.**',
+        url    : '/todo',
+        lazyLoad: async function ($transition$) {
+            const $ocLazyLoad = $transition$.injector().get('$ocLazyLoad');
+            return import('appTodo/todoModule')
+                .then( module =>
+                    $ocLazyLoad.load({ name : 'todo.module' })
+                );
+        }
+    }
+    const remoteUsersState = {
+        parent : 'shell',
+        name   : 'remoteUsers.**',
+        url    : '/remoteUsers',
+        lazyLoad: async function ($transition$) {
+            const $ocLazyLoad = $transition$.injector().get('$ocLazyLoad');
+            const todoModule = await import('appUsers/usersModule');
+            return $ocLazyLoad.load({ name : 'remoteUsers.module' });
+        }
+    };
+
     $stateRegistry.register(shellState);
-    $stateRegistry.register(usersState);
+    $stateRegistry.register(localUsersState);
+    $stateRegistry.register(remoteUsersState);
+    $stateRegistry.register(todoState);
 }

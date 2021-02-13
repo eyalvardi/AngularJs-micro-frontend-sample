@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AngularJS micro frontend</title>
+    <link rel="stylesheet" href="/apollo/ng1-to-ng2/css/bootstrap.min.css">
+    <style>
+        my-app {
+            display: grid;
+            align-items: center;
+            justify-items: center;
+        }
+        .active { color: red; font-weight: bolder; }
+        .media
+        {
+            /*box-shadow:0px 0px 4px -2px #000;*/
+            margin: 20px 0;
+            padding:30px;
+        }
+        .dp
+        {
+            border:10px solid #eee;
+            transition: all 0.2s ease-in-out;
+        }
+        .dp:hover
+        {
+            border:2px solid #eee;
+            transform:rotate(360deg);
+            -ms-transform:rotate(360deg);
+            -webkit-transform:rotate(360deg);
+            /*-webkit-font-smoothing:antialiased;*/
+        }
+    </style>
+</head>
+<body>    
+    <div ui-view>App Users loading...</div>
+</body>
+</html>
