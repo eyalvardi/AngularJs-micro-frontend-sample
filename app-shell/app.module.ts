@@ -7,7 +7,7 @@ import {appRoutesConfig} from './app-routees.config';
 
 // Webpack global var
 declare const IS_UI_VISUALIZER : boolean;
-declare const UI_TRACE_LEVEL   : string;
+declare const UI_TRACE_LEVEL   : string[];
 
 export const appModule = angular
     .module('app.module',[

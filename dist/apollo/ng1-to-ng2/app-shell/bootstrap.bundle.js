@@ -161,7 +161,7 @@ var AppComponent = /** @class */ (function () {
 }());
 var appComponent = {
     controller: AppComponent,
-    template: "\n    <div>\n        <h3>Micro Frontend with AngularJS</h3>\n        <pre>Webpack ^5.x | AngularJs : {{ ::$ctrl.version }} </pre>\n        <hr>\n        <nav>\n            <a ui-sref=\"users\" ui-sref-active=\"active\">Users (local)</a> |\n            <a ui-sref=\"remoteUsers\" ui-sref-active=\"active\">Users (remote)</a> |\n            <a ui-sref=\"todo\" ui-sref-active=\"active\">Todo (remote)</a> |            \n        </nav>\n        <hr>\n        <div ui-view=\"shellView\"></div>\n        \n    </div>\n"
+    template: "\n    <div>\n        <h3>Micro Frontend with AngularJS :-)</h3>\n        <pre>Webpack ^5.x | AngularJs : {{ ::$ctrl.version }} </pre>\n        <hr>\n        <nav>\n            <a ui-sref=\"users\" ui-sref-active=\"active\">Users (local)</a> |\n            <a ui-sref=\"remoteUsers\" ui-sref-active=\"active\">Users (remote)</a> |\n            <a ui-sref=\"todo\" ui-sref-active=\"active\">Todo (remote)</a> |            \n        </nav>\n        <hr>\n        <div ui-view=\"shellView\"></div>\n        \n    </div>\n"
 };
 
 
@@ -199,10 +199,10 @@ var appModule = angular__WEBPACK_IMPORTED_MODULE_0__.module('app.module', [
     .config([
     '$uiRouterProvider',
     function ($uiRouter) {
-        // Enable tracing of each TRANSITION... (check the javascript console)
-        // This syntax `$trace.enable(1)` is an alternative to `$trace.enable("TRANSITION")`.
-        // Besides "TRANSITION", you can also enable tracing for : "RESOLVE", "HOOK", "INVOKE", "UIVIEW", "VIEWCONFIG"
-        $uiRouter.trace.enable(["TRANSITION"] || 0);
+        var _a;
+        // Webpack variable
+        (_a = $uiRouter.trace).enable.apply(_a, ["TRANSITION"]);
+        // Webpack variable
         if (false) {}
     }
 ]);
