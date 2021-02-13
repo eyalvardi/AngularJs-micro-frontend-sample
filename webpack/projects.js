@@ -36,7 +36,7 @@ const basicConfig = {
     },
     plugins : [
         new ForkTsCheckerWebpackPlugin(),
-        new BundleAnalyzerPlugin()
+        //new BundleAnalyzerPlugin()
     ],
     output: {
         path: path.resolve(__dirname, "../dist/apollo/ng1-to-ng2"),
@@ -164,8 +164,8 @@ const devServerConfig = {
     devServer: {
         publicPath: '/apollo/',
         port: 8080,
-        //open: true,
-        openPage: 'apollo/ng1-to-ng2',
+        open: true,
+        openPage: 'apollo/#!/users',
         contentBase: path.join(__dirname, './dist/apollo/ng1-to-ng2'),
         contentBasePublicPath: '/apollo/ng1-to-ng2',
     },
