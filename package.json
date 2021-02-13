@@ -5,13 +5,7 @@
     "--------------   Shell  ---------": "",
     "serve": "webpack serve --progress",
     "build": "webpack --progress",
-    "build-prod": "webpack --mode production --profile --optimization-minimize --progress --json=stats-prod.json",
-    "--------------   Todo  ---------": "",
-    "serve-todo": "webpack serve --progress --config webpack.config.todo.js",
-    "build-todo": "webpack --progress --config webpack.config.todo.js",
-    "--------------   Misc  ---------": "",
-    "diif": "wbd diff stats.json stats-prod.json -o diff.json",
-    "tsc": "tsc -p tsconfig.json"
+    "build-prod": "webpack --mode production --profile --optimization-minimize --progress --json=stats-prod.json"
   },
   "dependencies": {
     "@uirouter/angularjs": "^1.0.29",
