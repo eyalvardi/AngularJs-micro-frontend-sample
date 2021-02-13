@@ -13,7 +13,7 @@ export const appComponent : IComponentOptions = {
     controller: AppComponent,
     template : `
     <div>
-        <h3>Micro Frontend with AngularJS</h3>
+        <h3>Micro Frontend with AngularJS :-)</h3>
         <pre>Webpack ^5.x | AngularJs : {{ ::$ctrl.version }} </pre>
         <hr>
         <nav>
