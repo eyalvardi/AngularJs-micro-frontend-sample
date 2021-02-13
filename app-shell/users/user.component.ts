@@ -14,7 +14,7 @@ export const userComponent : IComponentOptions = {
     },
     template : `
     <div class="row">
-    <div class="col-lg-5">
+    <div>
         <div class="media">
             <a class="pull-left" href="#">
                 <img class="media-object dp img-circle" 

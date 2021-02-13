@@ -15,5 +15,5 @@ export const appComponent : IComponentOptions = {
     <div>
         <h3>App Users Micro Frontend</h3>       
         <div ui-view="shellView"></div>        
-    </div>    
+    </div>
 `};

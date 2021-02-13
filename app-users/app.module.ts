@@ -8,6 +8,7 @@ export const appModule = angular
     .module('app-users.module',[
         'ui.router',
         'oc.lazyLoad',
+        // My modules
         'remoteUsers.module'
     ])
     .component('myApp',appComponent)
