@@ -16,6 +16,12 @@ module.exports = inquirer
             ]
         },
         {
+            type : 'input',
+            name : 'buildVersion',
+            default: '0.0.0.1',
+            message: "What's your build version?"
+        },
+        {
             type : 'checkbox',
             name : 'uiRouterTrace',
             message: 'Choose the trace level:',

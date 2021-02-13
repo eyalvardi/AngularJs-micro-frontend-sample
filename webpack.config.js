@@ -12,6 +12,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlMinimizerPlugin = require("html-minimizer-webpack-plugin");
 //const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const util = require("util");
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 
@@ -104,7 +105,7 @@ const shellAppConfig = {
         new DefinePlugin({
             PRODUCTION: JSON.stringify(false),
         }),
-        new ModuleFederationPlugin({
+        /*new ModuleFederationPlugin({
             name: "shell",
             remotes: {
                 appTodo : "appTodo@http://localhost:8080/apollo/ng1-to-ng2/remoteEntry-todo-module.js",
@@ -112,7 +113,7 @@ const shellAppConfig = {
             },
             exposes: {},
             //shared : { angular : {singleton : true} }
-        }),
+        }),*/
         new HtmlWebpackPlugin({
             template: "./app-shell/index.html",
             filename: "../index.html",
@@ -122,7 +123,7 @@ const shellAppConfig = {
     ],
 };
 const usersAppConfig = {
-    name: "users-app",
+    name: "users",
     entry: {
         'app-users-main': "./app-users/main.ts"
     },
@@ -155,7 +156,7 @@ const usersAppConfig = {
     ],
 };
 const todoAppConfig = {
-    name: "todo-app",
+    name: "todo",
     entry: {        
         'app-todo-main': "./app-todo/main.ts"
     },
@@ -199,7 +200,7 @@ module.exports = (env, webpackArgs) => {
         const projects = [];
         args.projects.forEach( pro => {
             if( projectsMap.has(pro)){
-                projects.push(
+                projectsMap.set(pro,
                     merge(
                         basicConfig ,
                         {
@@ -213,11 +214,36 @@ module.exports = (env, webpackArgs) => {
                         projectsMap.get(pro)
                     )
                 );
+                projects.push(projectsMap.get(pro));
             }
         });
+        if(args.buildVersion) {
+            const baseProjectsPath =  path.resolve(__dirname, `./dist/apollo/${args.buildVersion}`);
+            projects.forEach( proj => {
+                proj.output.path = baseProjectsPath;
+            });
+            // Update Shell remotes links by build version.
+            projectsMap.get('shellAppConfig').plugins.push(
+                new ModuleFederationPlugin({
+                    name: "shell",
+                    remotes: {
+                        appTodo : `appTodo@http://localhost:8080/apollo/${args.buildVersion}/remoteEntry-todo-module.js`,
+                        appUsers: `appUsers@http://localhost:8080/apollo/${args.buildVersion}/remoteEntry-users-module.js`,
+                    },
+                    exposes: {},
+                    //shared : { angular : {singleton : true} }
+                }),
+            )
+            // Update Dev Server
+            devServerConfig.devServer.contentBase = baseProjectsPath
+            devServerConfig.devServer.contentBasePublicPath = `/apollo/${args.buildVersion}`
+
+
+        }
 
         projects.push(devServerConfig);        
-        //console.log(projects);
+        //console.log(util.inspect(projectsMap.get('shellAppConfig'), false,5,true));
+
         return projects;
     })
 }
