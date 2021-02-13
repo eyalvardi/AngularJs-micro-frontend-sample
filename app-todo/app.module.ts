@@ -2,15 +2,14 @@ import * as angular from 'angular';
 import '@uirouter/angularjs';
 import 'oclazyload';
 
-import {todoModule} from './todo/todo.module';
 import {appComponent} from "./app.component";
 
 
 export const appModule = angular
-	.module('app.module', [
+	.module('app-todo.module', [
 		'ui.router',
 		'oc.lazyLoad',
-		todoModule.name
+		'todo.module'
 	])
 	.component('myApp', appComponent)
 	.config([

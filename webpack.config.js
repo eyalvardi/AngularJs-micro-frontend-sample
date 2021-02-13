@@ -10,6 +10,9 @@ const {ModuleFederationPlugin} = require("webpack").container;
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlMinimizerPlugin = require("html-minimizer-webpack-plugin");
+//const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 
 const basicConfig = {
@@ -33,6 +36,10 @@ const basicConfig = {
             },
         ],
     },
+    plugins : [
+        new ForkTsCheckerWebpackPlugin(),
+        new BundleAnalyzerPlugin()
+    ]
 
     // Doesn't work with federation (Micro frontend).
     /*optimization: {
@@ -149,7 +156,7 @@ const usersAppConfig = {
 };
 const todoAppConfig = {
     name: "todo-app",
-    entry: {
+    entry: {        
         'app-todo-main': "./app-todo/main.ts"
     },
     output: {
@@ -209,7 +216,7 @@ module.exports = (env, webpackArgs) => {
             }
         });
 
-        projects.push(devServerConfig);
+        projects.push(devServerConfig);        
         //console.log(projects);
         return projects;
     })
@@ -223,3 +230,4 @@ module.exports = [
   devServerConfig
 ]
 */
+

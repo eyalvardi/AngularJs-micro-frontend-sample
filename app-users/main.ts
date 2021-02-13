@@ -1,8 +1,8 @@
 import * as angular from 'angular';
 
-import(
-    /* webpackChunkName: "bootstrap" */
-    './app.module'
-    ).then( module => {
-    angular.bootstrap(document,[ module.appModule.name]);
+Promise.all([
+    import( /* webpackChunkName: "remote-users.module" */ './users/users.module'),
+    import( /* webpackChunkName: "bootstrap" */ './app.module'),
+]).then( values => {
+     angular.bootstrap(document,[ 'app-users.module']);
 })

@@ -2,15 +2,13 @@ import * as angular from 'angular';
 import '@uirouter/angularjs';
 import 'oclazyload';
 
-import {usersModule} from "./users/users.module";
 import {appComponent} from "./app.component";
-import {appRoutesConfig} from './users/app-routees.config';
 
 export const appModule = angular
-    .module('app.module',[
+    .module('app-users.module',[
         'ui.router',
         'oc.lazyLoad',
-        usersModule.name
+        'remoteUsers.module'
     ])
     .component('myApp',appComponent)
     .config([
