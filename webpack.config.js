@@ -193,14 +193,25 @@ module.exports = (env, webpackArgs) => {
         args.projects.forEach( pro => {
             if( projectsMap.has(pro)){
                 projects.push(
-                    merge( basicConfig , projectsMap.get(pro) )
+                    merge(
+                        basicConfig ,
+                        {
+                            plugins : [
+                              new DefinePlugin({
+                                  IS_UI_VISUALIZER : args.isUiVisualizer || 0,
+                                  UI_TRACE_LEVEL   : JSON.stringify(args.uiRouterTrace)
+                              })
+                            ]
+                        },
+                        projectsMap.get(pro)
+                    )
                 );
             }
         });
 
         projects.push(devServerConfig);
         console.log(projects);
-
+        console.log(JSON.stringify(args.uiRouterTrace));
         return projects;
     })
 }

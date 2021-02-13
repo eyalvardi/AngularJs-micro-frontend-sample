@@ -14,6 +14,25 @@ module.exports = inquirer
                 { name :'app-todo'  ,value : 'todoAppConfig'  ,checked: true},
                 { name :'app-users' ,value : 'usersAppConfig' ,checked: true},
             ]
+        },
+        {
+            type : 'checkbox',
+            name : 'uiRouterTrace',
+            message: 'Choose the trace level:',
+            choices : [
+                { name :'TRANSITION' ,checked: true},
+                { name :'RESOLVE'       },
+                { name :'HOOK'          },
+                { name :'INVOKE'        },
+                { name :'UIVIEW'        },
+                { name :'VIEWCONFIG'    },
+            ]
+        },
+        {
+            type: 'confirm',
+            name: 'isUiVisualizer',
+            default : false,
+            message : 'Turn on the UI Visualizer?'
         }
-    ]);
 
+    ]);
