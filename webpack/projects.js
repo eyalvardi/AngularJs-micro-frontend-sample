@@ -37,7 +37,10 @@ const basicConfig = {
     plugins : [
         new ForkTsCheckerWebpackPlugin(),
         new BundleAnalyzerPlugin()
-    ]
+    ],
+    output: {
+        path: path.resolve(__dirname, "../dist/apollo/ng1-to-ng2"),
+    },
 
     // Doesn't work with federation (Micro frontend).
     /*optimization: {
@@ -64,7 +67,6 @@ const shellAppConfig = {
         'app-shell-main': "./app-shell/main.ts"
     },
     output: {
-        path: path.resolve(__dirname, "./dist/apollo/ng1-to-ng2"),
         filename: "app-shell/[name].bundle.js",
     },
     plugins: [
@@ -97,7 +99,6 @@ const usersAppConfig = {
         'app-users-main': "./app-users/main.ts"
     },
     output: {
-        path: path.resolve(__dirname, "./dist/apollo/ng1-to-ng2"),
         filename: "app-users/[name].bundle.js",
     },
     plugins: [
@@ -130,7 +131,6 @@ const todoAppConfig = {
         'app-todo-main': "./app-todo/main.ts"
     },
     output: {
-        path: path.resolve(__dirname, "./dist/apollo/ng1-to-ng2"),
         filename: "app-todo/[name].bundle.js",
     },
     plugins: [
@@ -157,6 +157,7 @@ const todoAppConfig = {
         })
     ],
 };
+
 const devServerConfig = {
     name: 'root-dev-server',
     mode: 'development',
@@ -170,41 +171,34 @@ const devServerConfig = {
     },
     entry: {},
     output: {
-        path: path.resolve(__dirname, "./dist/apollo"),
+        path: path.resolve(__dirname, "../dist/apollo"),
         publicPath: 'http://localhost:8080/apollo/',
     },
-    plugins: [
-        new CopyWebpackPlugin({
-            patterns: [
-                {
-                    from: 'node_modules/bootstrap/dist/css/bootstrap.min.css',
-                    to: './ng1-to-ng2/css'
-                }
-            ]
-        })
-    ]
+    plugins : []
 }
 
-function createDefinePlugins(isUiVisualizer, uiRouterTrace){
+function createDefinePlugins(isUiVisualizer, uiRouterTrace, buildVersion){
     return new DefinePlugin({
         IS_UI_VISUALIZER : isUiVisualizer || 0,
-        UI_TRACE_LEVEL   : JSON.stringify(uiRouterTrace)
+        UI_TRACE_LEVEL   : JSON.stringify(uiRouterTrace),
+        FOLDER_VERSION   : JSON.stringify(buildVersion)
     })
 }
-function mergeAppConfig( appConfig, isUiVisualizer, uiRouterTrace){
+function mergeAppConfig( appConfig, isUiVisualizer, uiRouterTrace, buildVersion){
     return merge(
         basicConfig ,
-        { plugins : [createDefinePlugins(isUiVisualizer, uiRouterTrace)] },
+        { plugins : [createDefinePlugins(isUiVisualizer, uiRouterTrace, buildVersion)] },
         appConfig
     )
 }
+
 function buildAppConfig( configName , isUiVisualizer, uiRouterTrace, buildVersion){
     let config;
-    const baseProjectsPath =  path.resolve(__dirname, `./dist/apollo/${buildVersion}`);
+    const baseProjectsPath =  path.resolve(__dirname, `../dist/apollo/${buildVersion}`);
 
     switch (configName){
         case 'shell':
-            config = mergeAppConfig(shellAppConfig,isUiVisualizer, uiRouterTrace);
+            config = mergeAppConfig(shellAppConfig,isUiVisualizer, uiRouterTrace, buildVersion);
             config.output.path = baseProjectsPath;
             config.plugins.push(
                 new ModuleFederationPlugin({
@@ -219,23 +213,33 @@ function buildAppConfig( configName , isUiVisualizer, uiRouterTrace, buildVersio
             )
             break;
         case 'todo':
-            config = mergeAppConfig(todoAppConfig,isUiVisualizer, uiRouterTrace);
+            config = mergeAppConfig(todoAppConfig,isUiVisualizer, uiRouterTrace, buildVersion);
             config.output.path = baseProjectsPath;
             break;
         case 'users':
-            config = mergeAppConfig(usersAppConfig,isUiVisualizer, uiRouterTrace);
+            config = mergeAppConfig(usersAppConfig,isUiVisualizer, uiRouterTrace, buildVersion);
             config.output.path = baseProjectsPath;
             break;
     }
 
     return config;
 }
-
 function buildServerAppConfig(contentBase,buildVersion){
     devServerConfig.devServer.contentBase = contentBase;
     devServerConfig.devServer.contentBasePublicPath = `/apollo/${buildVersion}`;
+    devServerConfig.plugins.push(
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: 'node_modules/bootstrap/dist/css/bootstrap.min.css',
+                    to: `./${buildVersion}/css`
+                }
+            ]
+        })
+    )
     return devServerConfig;
 }
+
 module.exports = {
     buildAppConfig,
     buildServerAppConfig
