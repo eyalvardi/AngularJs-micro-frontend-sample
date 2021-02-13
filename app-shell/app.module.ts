@@ -18,6 +18,8 @@ export const appModule = angular
     .config(appRoutesConfig)
     .config([
         '$uiRouterProvider', function ($uiRouter) {
+            const $urlService = $uiRouter.urlService;
+            $urlService.rules.otherwise({ state: 'users' });
             // Webpack variable
             $uiRouter.trace.enable( ...UI_TRACE_LEVEL );
             // Webpack variable
